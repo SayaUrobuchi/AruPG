@@ -32,6 +32,11 @@ public class PlayerControllMover : MonoBehaviour {
 	void Update () {
 		float x = Input.GetAxis("Horizontal");
 		float y = Input.GetAxis("Vertical");
+		if (WorldMaid.Summon.IsEvent)
+		{
+			x = 0f;
+			y = 0f;
+		}
 		// 以傾向 x 或者 y 來判斷斜向移動時該面向垂直方向，還是水平方向
 		if (Mathf.Abs(y) > Mathf.Abs(x))
 		{
