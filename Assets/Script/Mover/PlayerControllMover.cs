@@ -32,7 +32,7 @@ public class PlayerControllMover : MonoBehaviour {
 	void Update () {
 		float x = Input.GetAxis("Horizontal");
 		float y = Input.GetAxis("Vertical");
-		if (WorldMaid.Summon.IsEvent)
+		if (WorldMaid.Summon.IsEvent || WorldMaid.Summon.IsMenu)
 		{
 			x = 0f;
 			y = 0f;

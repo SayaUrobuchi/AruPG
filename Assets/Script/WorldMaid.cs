@@ -8,6 +8,8 @@ public class WorldMaid : MonoBehaviour {
 
 	// 記錄是否處於事件進行中的狀態
 	public bool IsEvent = false;
+	// 記錄是否處於選單呼叫狀態
+	public bool IsMenu = false;
 
 	// Use this for initialization
 	void Start () {

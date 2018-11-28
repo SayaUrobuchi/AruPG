@@ -25,8 +25,9 @@ public class MainCharacter : Character
 				QuestionIcon.enabled = false;
 			}
 		}
-		if (!WorldMaid.Summon.IsEvent)
+		if (!WorldMaid.Summon.IsEvent && !WorldMaid.Summon.IsMenu)
 		{
+			// 調查 NPC
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
 				if (TriggerTest.IsTargetNPCExists())

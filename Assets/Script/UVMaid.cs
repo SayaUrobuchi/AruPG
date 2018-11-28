@@ -3,15 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 讓這份 Script 在非 Play Mode 也能執行
+// 掛著這個 Component 的 GameObject 一旦發生變動，就會執行 Update
 [ExecuteInEditMode]
+// 這限制 GameObject 上必須有 RawImage 才能掛 UVMaid
 [RequireComponent(typeof(RawImage))]
 public class UVMaid : MonoBehaviour
 {
+	// 對齊基準
     public enum FitType
     {
+		// 改變 H 配合 W
         RefToW, 
+		// 改變 W 配合 H
         RefToH, 
+		// 讓圖維持比例縮放至填滿範圍不留空白的最小倍率，可以超出去
         Fill, 
+		// 讓圖維持比例縮放至不超出去的最大倍率
         NotFill, 
     }
     
@@ -77,6 +85,7 @@ public class UVMaid : MonoBehaviour
         }
     }
 
+	// [ContextMenu(...)] 可以在 Component 的右鍵選單上追加項目，選了就會執行這個 method
     [ContextMenu("AdjustUV")]
     public void AdjustUV()
     {
@@ -88,6 +97,7 @@ public class UVMaid : MonoBehaviour
             Rect size = target.rectTransform.rect;
             Rect uv = target.uvRect;
 
+			// 計算出參照的基準是寬還是高
             bool refX = (RefType == FitType.RefToW);
             switch (RefType)
             {
@@ -115,6 +125,7 @@ public class UVMaid : MonoBehaviour
                 break;
             }
 
+			// 以 橫軸 為基準時：用 顯示的寬 算出 顯示的高 再去推算 UV 所佔的縮放比例
             if (refX)
             {
                 float y = size.width * tex.height / tex.width;
