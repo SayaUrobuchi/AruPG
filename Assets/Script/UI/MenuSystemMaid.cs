@@ -24,14 +24,19 @@ public class MenuSystemMaid : MonoBehaviour
 
 	public static MenuSystemMaid Summon;
 
+	[Header("References")]
 	public GameObject View;
 	public Transform MainMenuItemContainer;
 	public MainMenuItemMaid MainMenuItemTemplate;
 	public MainMenuItemData[] MainMenuItems;
+	public RectTransform MainMenuCursor;
+
+	[Header("Adjust Settings")]
+	public float MainMenuCursorXOffset = 2f;
 
 	private bool active = false;
 	private MainMenuItemMaid[] MainMenuMaidList;
-	private int currentSelected = -1;
+	private int currentSelected = 0;
 	private MainMenuFunc currentPage;
 
 	// Use this for initialization
@@ -46,7 +51,7 @@ public class MenuSystemMaid : MonoBehaviour
 			MainMenuMaidList[i] = maid;
 		}
 		// 設定預設選取項目
-		currentSelected = 0;
+		SelectItem(0);
 		MenuClose();
 	}
 	
@@ -56,7 +61,7 @@ public class MenuSystemMaid : MonoBehaviour
 		bool menuKeyPressed = Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Escape);
 		bool up = Input.GetKeyDown(KeyCode.UpArrow);
 		bool down = Input.GetKeyDown(KeyCode.DownArrow);
-		bool decide = Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space);
+		bool decide = Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Z);
 		// 選單存在時
 		if (active)
 		{
@@ -80,6 +85,13 @@ public class MenuSystemMaid : MonoBehaviour
 				else if (decide)
 				{
 					Debug.Log("press on index ["+currentSelected+"] with ("+MainMenuItems[currentSelected].DisplayName+", "+MainMenuItems[currentSelected].Func+")");
+					// 道具欄已可呼叫
+					MainMenuFunc target = MainMenuItems[currentSelected].Func;
+					if (target == MainMenuFunc.Item)
+					{
+						currentPage = target;
+						ItemSystemMaid.Summon.ItemMenuOpen();
+					}
 				}
 			}
 		}
@@ -109,6 +121,7 @@ public class MenuSystemMaid : MonoBehaviour
 		{
 			MainMenuMaidList[i].SetSelected(i == currentSelected);
 		}
+		SelectItem(currentSelected);
 	}
 
 	public void MenuClose()
@@ -124,5 +137,26 @@ public class MenuSystemMaid : MonoBehaviour
 		MainMenuMaidList[currentSelected].SetSelected(false);
 		currentSelected = idx;
 		MainMenuMaidList[currentSelected].SetSelected(true);
+		// 移動遊標位置用
+		MoveCursor(MainMenuMaidList[currentSelected].transform);
+	}
+
+	public void MoveCursor(Transform t)
+	{
+		// 抓 RectTransform 上的 rect 能較好地掌握矩形的位置和範圍
+		RectTransform rt = t.GetComponent<RectTransform>();
+		// 抓位置加上 Offset 的位移
+		Vector2 pos = rt.anchoredPosition + Vector2.left * MainMenuCursorXOffset;
+		MainMenuCursor.anchoredPosition = pos;
+	}
+
+	public MainMenuFunc GetCurrentPage()
+	{
+		return currentPage;
+	}
+
+	public void BackToMain()
+	{
+		currentPage = MainMenuFunc.Main;
 	}
 }
